@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2013-2017 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,10 +28,7 @@
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-
-    font-family: -apple-system, sans-serif;
+    font-family: -webkit-system-font, sans-serif;
     font-size: 11px;
 
     position: absolute;
@@ -52,42 +49,35 @@ body {
 
     -webkit-font-smoothing: subpixel-antialiased;
 
-    tab-size: 4; /* FIXME: This should be controlled by a setting. <rdar://problem/10593948> */
-}
-
-body:not(.mavericks) {
     background-color: white;
 }
 
 body.docked.bottom {
-    border-top: 1px solid hsl(0, 0%, 78%);
+    border-top: 1px solid var(--border-color);
 }
 
 body.docked.right {
-    border-left: 1px solid hsl(0, 0%, 70%);
+    border-left: 1px solid var(--border-color);
 }
 
-body.window-inactive.docked.bottom {
-    border-top-color: hsl(0, 0%, 85%);
-}
-
-body.window-inactive.docked.right {
-    border-left-color: hsl(0, 0%, 85%);
+body.docked.left {
+    border-right: 1px solid var(--border-color);
 }
 
 #docked-resizer {
     display: none;
 
-    z-index: 100;
+    z-index: var(--z-index-resizer);
 }
 
 body.docked #docked-resizer {
     display: block;
+
+    position: absolute;
+    top: 0;
 }
 
 body.docked.bottom #docked-resizer {
-    position: absolute;
-    top: 0;
     left: 0;
     right: 0;
     height: 3px;
@@ -96,9 +86,15 @@ body.docked.bottom #docked-resizer {
 }
 
 body.docked.right #docked-resizer {
-    position: absolute;
-    top: 0;
     left: 0;
+    bottom: 0;
+    width: 3px;
+
+    cursor: col-resize;
+}
+
+body.docked.left #docked-resizer {
+    right: 0;
     bottom: 0;
     width: 3px;
 
@@ -117,36 +113,44 @@ input[type=range] {
     -webkit-appearance: none;
 }
 
-input[type=range]::-webkit-slider-runnable-track::before {
-    content: "";
-    display: block;
-    background: hsl(212, 92%, 54%);
+input[type=range]::-webkit-slider-thumb {
+    margin-top: -7px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
     height: 1px;
-    margin: 8px 2px -8px 2px;
+    margin-top: 1px;
+    background-color: var(--selected-background-color);
 }
 
 #main {
+    position: absolute;
+    top: calc(var(--toolbar-height) + var(--tab-bar-height));
+    left: 0;
+    right: 0;
+    bottom: 0;
+
     display: flex;
-    flex: 1;
+    flex-direction: column;
 
     background-color: white;
 
     /* The position and z-index are needed to make negative z-index work in the DOM tree. */
-    position: relative;
     z-index: 0;
 }
 
 #navigation-sidebar {
     width: 300px;
+    height: 100%;
 }
 
-body.docked.right #navigation-sidebar.collapsed > .resizer {
+body.docked:matches(.right, .left) #navigation-sidebar.collapsed > .resizer {
     pointer-events: none;
 }
 
 #content {
     display: flex;
-    flex-direction: column;
+    height: 100%; /* This reduces paint areas when typing in the console. http://webkit.org/b/145324 */
     flex: 1;
 }
 
@@ -154,53 +158,15 @@ body.docked.right #navigation-sidebar.collapsed > .resizer {
     flex: 1;
 }
 
-#split-content-browser {
-    border-top: 1px solid hsl(0, 0%, 70%);
-}
-
-body.window-inactive #split-content-browser {
-    border-top-color: hsl(0, 0%, 85%);
-}
-
-#split-content-browser > .navigation-bar {
-    cursor: row-resize;
-
-    background-color: hsl(0, 0%, 94%);
-}
-
-#split-content-browser > .navigation-bar .item:not(.flexible-space) {
-    cursor: default;
-}
-
-#split-content-browser .hierarchical-path-component.log-icon .icon {
-    margin-left: 6px;
-    margin-right: 6px;
-    opacity: 0.7;
-}
-
-#split-content-browser .hierarchical-path-component.log-icon .title {
-    color: hsla(0, 0%, 0%, 0.75);
-}
-
-#split-content-browser .hierarchical-path-component.log-icon select {
-    display: none;
-}
-
-#split-content-browser > .navigation-bar > :matches(.hierarchical-path, .log-search-bar, .log-scope-bar) {
-    pointer-events: none;
-}
-
-#split-content-browser > .navigation-bar > :matches(.log-search-bar, .log-scope-bar) > :matches(li, input) {
-    pointer-events: all;
-}
-
 #details-sidebar {
     width: 300px;
+    height: 100%;
 }
 
 .message-text-view {
     display: flex;
-    z-index: 1000;
+    flex-direction: column;
+    z-index: var(--z-index-popover);
 
     position: absolute;
     top: 0;
@@ -208,53 +174,79 @@ body.window-inactive #split-content-browser {
     right: 0;
     bottom: 0;
 
-    padding-left: 20%;
-    padding-right: 20%;
-
     justify-content: center;
     align-items: center;
 
-    line-height: 20px;
     white-space: pre-wrap;
     text-align: center;
+    font-size: 13px;
+    color: var(--text-color-gray-medium);
+}
 
-    font-size: 18px;
-    font-weight: bold;
+.message-text-view > .message {
+    display: inline-block;
+    padding: 15px;
+    font-size: var(--message-text-view-font-size);
+}
 
-    color: hsl(0, 0%, 74%);
-    background-color: white;
+.message-text-view .navigation-item-help {
+    display: block;
+    line-height: 22px;
+}
+
+.message-text-view .navigation-item-help .navigation-bar {
+    display: inline-flex;
+    height: 20px;
+    padding: 0 4px;
+    border-bottom: none;
+    vertical-align: middle;
+}
+
+.message-text-view .navigation-item-help .navigation-bar > .item {
+    height: 100%;
+    padding: 0 4px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: solid 1px var(--border-color);
 }
 
 .message-text-view.error {
-    color: hsl(0, 86%, 47%);
+    color: var(--error-text-color);
 }
 
-.message-text-view.error::before {
-    display: inline-block;
-
-    width: 20px;
-    height: 20px;
-    margin-right: 4px;
-    vertical-align: bottom;
-
-    background-image: url(../Images/Error.svg);
-    background-size: 100% 100%;
-    content: "";
+.resource-link {
+    display: block;
 }
 
+.resource-link + .resource-link {
+    margin-top: 2px;
+}
+
+.resource-link,
 .go-to-link {
     color: hsl(0, 0%, 33%);
     text-decoration: underline;
     cursor: pointer;
+    -webkit-user-select: none;
 }
 
 .go-to-link:not(.dont-float) {
-    float: right;
-    margin-left: 5px;
     max-width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+
+    --go-to-link-margin-start: 5px;
+}
+
+body[dir=ltr] .go-to-link:not(.dont-float) {
+    float: right;
+    margin-left: var(--go-to-link-margin-start);
+}
+
+body[dir=rtl] .go-to-link:not(.dont-float) {
+    float: left;
+    margin-right: var(--go-to-link-margin-start);
 }
 
 .go-to-arrow {
@@ -265,7 +257,7 @@ body.window-inactive #split-content-browser {
     border: none;
 
     background-color: transparent;
-    background-image: -webkit-canvas(go-to-arrow-normal);
+    background-image: url(../Images/GoToArrow.svg#normal);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 10px 10px;
@@ -280,19 +272,34 @@ body.window-inactive #split-content-browser {
 }
 
 .go-to-arrow:active {
-    background-image: -webkit-canvas(go-to-arrow-normal-active);
+    background-image: url(../Images/GoToArrow.svg#active);
+}
+
+body[dir=rtl] .go-to-arrow {
+    transform: scaleX(-1);
 }
 
 :matches(:focus, .force-focus) .selected .go-to-arrow {
-    background-image: -webkit-canvas(go-to-arrow-selected);
+    background-image: url(../Images/GoToArrow.svg#selected);
 }
 
 :matches(:focus, .force-focus) .selected .go-to-arrow:active {
-    background-image: -webkit-canvas(go-to-arrow-selected-active);
+    background-image: url(../Images/GoToArrow.svg#selected-active);
 }
 
 .hidden {
     display: none !important;
+}
+
+.expand-list-button {
+    -webkit-appearance: none;
+    text-decoration: underline;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    cursor: pointer;
+    color: black;
 }
 
 .node-link {
@@ -300,7 +307,7 @@ body.window-inactive #split-content-browser {
     cursor: pointer;
 }
 
-.node-link-list, .node-link-list li {
+.node-link-list, .node-link-list li:not([hidden]) {
     display: block;
     margin: 0;
     padding: 0;
@@ -321,13 +328,12 @@ body.window-inactive #split-content-browser {
 
 .bouncy-highlight {
     position: absolute;
-    z-index: 100;
+    z-index: var(--z-index-highlight);
 
     box-shadow: inset hsl(50, 91%, 76%) 0 -1px 0, hsl(52, 56%, 60%) 0 1px 1px, hsla(0, 0%, 0%, 0.33) 0 1px 2px 1px;
-    text-shadow: white 0 0 2px;
 
-    background: linear-gradient(to bottom, hsl(54, 93%, 70%), hsl(50, 84%, 67%));
-    border-radius: 7px;
+    background-color: hsl(54, 93%, 70%);
+    color: black !important;
 
     padding: 2px 4px;
     margin-top: -2px;
@@ -364,4 +370,13 @@ body.window-inactive #split-content-browser {
     100% {
         opacity: 0;
     }
+}
+
+:matches(img, canvas).show-grid {
+    background-image: linear-gradient(315deg, transparent 75%, hsl(0, 0%, 95%) 75%),
+                      linear-gradient(45deg, transparent 75%, hsl(0, 0%, 95%) 75%),
+                      linear-gradient(315deg, hsl(0, 0%, 95%) 25%, transparent 25%),
+                      linear-gradient(45deg, hsl(0, 0%, 95%) 25%, transparent 25%);
+    background-size: 20px 20px;
+    background-position: 10px 10px, 10px 0px, 0 0, 0 10px;
 }

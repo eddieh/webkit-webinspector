@@ -24,43 +24,37 @@
  */
 
 .network-icon .icon {
-    content: -webkit-image-set(url(../Images/Network.png) 1x, url(../Images/Network@2x.png) 2x);
-}
-
-.network-icon.large .icon {
-    content: -webkit-image-set(url(../Images/NetworkLarge.png) 1x, url(../Images/NetworkLarge@2x.png) 2x);
-}
-
-.colors-icon .icon {
-    content: -webkit-image-set(url(../Images/Colors.png) 1x, url(../Images/Colors@2x.png) 2x);
-}
-
-.colors-icon.large .icon {
-    content: -webkit-image-set(url(../Images/ColorsLarge.png) 1x, url(../Images/ColorsLarge@2x.png) 2x);
+    content: url(../Images/NetworkInstrument.svg);
 }
 
 .script-icon .icon {
-    content: -webkit-image-set(url(../Images/Script.png) 1x, url(../Images/Script@2x.png) 2x);
+    content: url(../Images/ScriptsInstrument.svg);
 }
 
-.script-icon.large .icon {
-    content: -webkit-image-set(url(../Images/ScriptLarge.png) 1x, url(../Images/ScriptLarge@2x.png) 2x);
+.memory-icon .icon {
+    content: url(../Images/MemoryInstrument.svg);
+}
+
+.heap-allocations-icon .icon {
+    content: url(../Images/HeapAllocationsInstrument.svg);
+}
+
+.layout-icon .icon {
+    content: url(../Images/LayoutInstrument.svg);
 }
 
 .rendering-frame-icon .icon {
-    content: -webkit-image-set(url(../Images/Frames.png) 1x, url(../Images/Frames@2x.png) 2x);
-}
-
-.rendering-frame-icon.large .icon {
-    content: -webkit-image-set(url(../Images/FramesLarge.png) 1x, url(../Images/FramesLarge@2x.png) 2x);
+    content: url(../Images/RenderingFramesInstrument.svg);
 }
 
 .stopwatch-icon .icon {
-    content: -webkit-image-set(url(../Images/Stopwatch.png) 1x, url(../Images/Stopwatch@2x.png) 2x);
+    content: url(../Images/Stopwatch.svg);
 }
 
-.profile-icon .icon {
-    content: -webkit-image-set(url(../Images/Profile.png) 1x, url(../Images/Profile@2x.png) 2x);
+.time-icon .icon {
+    content: url(../Images/Timeline.svg);
+    width: 13px;
+    opacity: 0.6;
 }
 
 .style-record .icon {
@@ -80,7 +74,11 @@
 }
 
 .rendering-frame-record .icon {
-    content: url(../Images/TimelineRecordRenderingFrame.svg);
+    content: url(../Images/RenderingFrame.svg);
+}
+
+.api-record .icon {
+    content: url(../Images/TimelineRecordAPI.svg);
 }
 
 .evaluated-record .icon {
@@ -103,10 +101,18 @@
     content: url(../Images/TimelineRecordConsoleProfile.svg);
 }
 
+.garbage-collection-profile-record .icon {
+    content: url(../Images/TimelineRecordGarbageCollection.svg);
+}
+
 .timer-record .icon {
     content: url(../Images/TimelineRecordTimer.svg);
 }
 
 .animation-record .icon {
     content: url(../Images/TimelineRecordAnimation.svg);
+}
+
+.heap-snapshot-record .icon {
+    content: url(../Images/HeapSnapshot.svg);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2013-2017 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,6 +35,19 @@
 
     -webkit-clip-path: circle(50% at 50% 50%);
     animation: unread-background-pulse 1.5s ease-in-out infinite alternate-reverse;
+
+    --unread-indicator-margin-start: -10px;
+    --unread-indicator-margin-end: 2px;
+}
+
+body[dir=ltr] .log-scope-bar > li.unread::before {
+    margin-left: var(--unread-indicator-margin-start);
+    margin-right: var(--unread-indicator-margin-end);
+}
+
+body[dir=rtl] .log-scope-bar > li.unread::before {
+    margin-left: var(--unread-indicator-margin-end);
+    margin-right: var(--unread-indicator-margin-start);
 }
 
 .log-scope-bar > li.unread:hover::before {
@@ -58,7 +71,7 @@
 }
 
 .content-view.log {
-    overflow-y: overlay;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
@@ -68,7 +81,7 @@
 
     word-wrap: break-word;
 
-    font-family: -apple-system, sans-serif;
+    font-family: -webkit-system-font, sans-serif;
     font-size: 12px;
 
     min-height: 100%;
@@ -107,7 +120,7 @@
     content: "";
     left: 0;
     top: -1px;
-    bottom: -1px;
+    bottom: 0;
     background: hsl(0, 0%, 60%);
     width: 2px;
     z-index: 10;
@@ -144,7 +157,7 @@
 
 .console-group-title::before {
     content: "";
-    background-image: -webkit-canvas(disclosure-triangle-small-open-normal);
+    background-image: url(../Images/DisclosureTriangles.svg#open-normal);
     background-size: 13px 13px;
     top: 4px;
     left: 4px;
@@ -153,7 +166,7 @@
 }
 
 .console-group.collapsed .console-group-title::before {
-    background-image: -webkit-canvas(disclosure-triangle-small-closed-normal);
+    background-image: url(../Images/DisclosureTriangles.svg#closed-normal);
 }
 
 .console-group.collapsed > .console-group-messages {
@@ -164,8 +177,22 @@
     position: relative;
 }
 
-.console-session + .console-session {
-    border-top: 3px dashed hsl(0, 0%, 94%);
+.console-session-header {
+    text-align: center;
+    padding: 6px 0;
+}
+
+.console-session:first-of-type .console-session-header {
+    color: hsl(0, 0%, 60%);
+}
+
+.console-session:not(:first-of-type) {
+    border-top: 0.5px dashed var(--border-color);
+}
+
+.console-session:not(:first-of-type) .console-session-header {
+    color: hsl(0, 0%, 30%);
+    background-color: hsl(0, 0%, 95%);
 }
 
 .console-messages a {
@@ -185,12 +212,6 @@
     display: none;
 }
 
-.search-bar.log-search-bar > input[type="search"] {
-    width: 150px;
-    border: 1px solid hsla(0, 0%, 0%, 0.35);
-    padding-left: 4px;
-}
-
 .search-in-progress .console-item.filtered-out-by-search {
     display: none;
 }
@@ -205,13 +226,18 @@
     background-color: hsla(53, 83%, 53%, 0.75);
 }
 
-/* @media reader currently blocked by: http://webkit.org/b/118096 */
-@media reader {
-    .console-user-command::before,
-    .console-messages:focus .console-item.selected .console-user-command::before,
-    .console-user-command-result.console-log-level::before,
-    .console-messages:focus .console-item.selected .console-user-command-result.console-log-level::before {
-        /* accessible label alternative for icon indicating console input/output/warning/error, etc. */
-        content: attr(data-labelprefix);
-    }
+.search-in-progress .console-item:not(.filtered-out-by-search).special-user-log .console-message-text .highlighted {
+    color: var(--selected-foreground-color);
+    background-color: var(--selected-background-color-highlight);
+
+    border-bottom: none;
+    text-decoration: underline;
+}
+
+.console-user-command::before,
+.console-messages:focus .console-item.selected .console-user-command::before,
+.console-user-command-result.console-log-level::before,
+.console-messages:focus .console-item.selected .console-user-command-result.console-log-level::before {
+        /* Accessible label alternative for icon indicating console input/output/warning/error, etc. */
+        alt: attr(data-labelprefix);
 }

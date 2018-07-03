@@ -24,58 +24,51 @@
  */
 
 .navigation-bar .item.button {
+    justify-content: center;
+    color: hsl(0, 0%, 18%);
+}
+
+.navigation-bar .item.button.image-only {
     width: 26px;
 }
 
+.navigation-bar .item.button.image-and-text {
+    padding: 0 8px;
+}
+
+.navigation-bar .item.button.image-and-text > span {
+    padding-bottom: 1px;
+    -webkit-padding-start: 4px;
+}
+
 .navigation-bar .item.button.text-only {
-    width: auto;
     padding: 1px 8px 3px;
     margin: 0 2px;
 
+    height: initial;
     line-height: 11px;
-    color: hsl(0, 0%, 18%);
     border: 1px solid transparent;
     border-radius: 3px;
     text-align: center;
-    height: auto;
-
-    justify-content: center;
 }
 
 .navigation-bar .item.button > .glyph {
-    width: 100%;
-    height: 100%;
-
-    background-repeat: no-repeat;
-    background-position: center center;
+    color: var(--glyph-color);
 }
 
-body.window-inactive .navigation-bar .item.button:not(.suppress-emboss) > .glyph {
-    opacity: 0.65;
+.navigation-bar .item.button:not(.disabled):active > .glyph {
+    color: var(--glyph-color-pressed);
 }
 
+.navigation-bar .item.button:not(.disabled):matches(:focus, .activate.activated, .radio.selected) > .glyph {
+    color: var(--glyph-color-active);
+}
+
+.navigation-bar .item.button:not(.disabled):active:matches(:focus, .activate.activated, .radio.selected) > .glyph {
+    color: var(--glyph-color-active-pressed);
+}
+
+.navigation-bar .item.button.disabled.image-and-text,
 .navigation-bar .item.button.disabled > .glyph {
-    opacity: 0.55 !important;
-}
-
-body.window-inactive .navigation-bar .item.button.disabled:not(.suppress-emboss) > .glyph {
-    opacity: 0.35 !important;
-}
-
-.navigation-bar .item.button.suppress-emboss {
-    background-image: none !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
-}
-
-.navigation-bar .item.button.suppress-emboss > .glyph {
-    background-color: hsl(0, 0%, 37%);
-}
-
-.navigation-bar .item.button.suppress-emboss:active > .glyph {
-    opacity: 1;
-}
-
-.navigation-bar .item.button.suppress-emboss.disabled > .glyph {
-    opacity: 0.7 !important;
+    color: var(--glyph-color-disabled);
 }
